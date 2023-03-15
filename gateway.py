@@ -27,14 +27,20 @@ logging.basicConfig(format="%(asctime)s %(levelname)s %(filename)s:%(funcName)s(
                     datefmt="%Y-%m-%d %H:%M:%S", level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
+# initlize the last motion time
+last_motion_time = time.time()
+
 mqttc = None
 
 GATEWAY = {
-    "name": "is215g11t04",
+    "root": "is215g11t04",
+    "full_reading": "is215g11t04/full_reading",
+    "alert": "is215g11t04/alert"
 }
 
-
 # Handles the case when the serial port can't be found
+
+
 def handle_missing_serial_port() -> None:
     print("Couldn't connect to the micro:bit. Try these steps:")
     print("1. Unplug your micro:bit")
@@ -144,7 +150,8 @@ def handle_mqtt_message(client, userdata, msg) -> None:
 
 # Handles incoming serial data
 def handle_serial_data(s: serial.Serial) -> None:
-    parameter_name_list = ["temperature", "gas_reading", "motion_reading"]
+    parameter_name_list = ["temperature",
+                           "gas_status", "smoke_status", "motion_reading"]
     output_dict = {}
     output_str = ""
 
@@ -159,12 +166,52 @@ def handle_serial_data(s: serial.Serial) -> None:
         output_dict[parameter_name_list[i]] = payload_list[i]
 
     output_str = str(output_dict)
-    # 5. Send to the broker with specified topic
-    logger.info(
-        f"Publish | topic: {GATEWAY['name']}/full_readings | payload: {output_str}")
-    mqttc.publish(
-        topic=f"{GATEWAY['name']}/full_readings", payload=output_str, qos=1)
+    # # 5. Send to the broker with specified topic
+    # logger.info(
+    #     f"Publish | topic: {GATEWAY['full_reading']} | payload: {output_str}")
+    # mqttc.publish(
+    #     topic=f"{GATEWAY['full_reading']}", payload=output_str, qos=1)
 
+    alert_filter(output_dict)
+    motion_filter(output_dict)
+
+# a function that checks data if there is any 
+def alert_filter(output_dict: dict) -> None:
+    temperature_alert = "High Temperature Detected! "
+    gas_alert = "Combustible Gas Detetcted! "
+    smoke_alert = "Smoke Detected! "
+
+    if output_dict["temperature"] > 39:
+        mqttc.publish(
+            topic=f"{GATEWAY['alert']}", payload=temperature_alert, qos=1)
+        logger.info(
+            f"Publish | topic: {GATEWAY['alert']} | payload: {temperature_alert}")
+
+    elif output_dict["gas_status"] != 0:
+        mqttc.publish(
+            topic=f"{GATEWAY['alert']}", payload=gas_alert, qos=1)
+        logger.info(
+            f"Publish | topic: {GATEWAY['alert']} | payload: {gas_alert}")
+
+    elif output_dict["smoke_status"] != 0:
+        mqttc.publish(
+            topic=f"{GATEWAY['alert']}", payload=smoke_alert, qos=1)
+        logger.info(
+            f"Publish | topic: {GATEWAY['alert']} | payload: {smoke_alert}")
+    else:
+        logger.info("=== All parameter reading normal. ===")
+        logger.info(
+            f"Publish | topic: {GATEWAY['full_reading']} | payload: {str(output_dict)}")
+
+
+def motion_filter(output_dict: dict) -> None:
+    if output_dict["motion_reading"]:
+        last_motion_time = time.time()
+    else: 
+        return
+
+def write_to_csv(reading_list:list) -> None:
+    return 
 
 def main() -> None:
     global mqttc
@@ -218,7 +265,7 @@ def main() -> None:
             if s.in_waiting > 0:
                 handle_serial_data(s)
 
-    mqttc.loop_stop()
+    # mqttc.loop_stop()
 
 
 if __name__ == "__main__":
