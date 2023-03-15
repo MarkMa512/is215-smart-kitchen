@@ -1,26 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import requests
 import serial
-import csv
 import os
 import subprocess
-import json
 import re
 import paho.mqtt.client as mqtt
 import sys
 import logging
 import argparse
-import getpass
-import random
-import urllib
-import pprint
-import sched
 import time
 import datetime
-import threading
-import json
 
 # Configure logging
 logging.basicConfig(format="%(asctime)s %(levelname)s %(filename)s:%(funcName)s():%(lineno)i: %(message)s",
