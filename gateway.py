@@ -27,16 +27,24 @@ logging.basicConfig(format="%(asctime)s %(levelname)s %(filename)s:%(funcName)s(
                     datefmt="%Y-%m-%d %H:%M:%S", level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-# initlize the last motion time
+# initlize the last motion time for people presence monitoring
 last_motion_time = time.time()
 
 mqttc = None
 
+# a dictionary of the topics
 GATEWAY = {
     "root": "is215g11t04",
     "full_reading": "is215g11t04/full_reading",
     "alert": "is215g11t04/alert"
 }
+
+# create output cvs
+output_csv_name = "data_collection/data/" + \
+    datetime.now().strftime('%d%m%Y-%H') + "_data.csv"
+create_csv = open(output_csv_name, 'w')
+create_csv.close()
+
 
 # Handles the case when the serial port can't be found
 
@@ -129,6 +137,8 @@ def get_serial_dev_name() -> str:
 
 # Handles an MQTT client connect event
 # This function is called once just after the mqtt client is connected to the server.
+
+
 def handle_mqtt_connack(client, userdata, flags, rc) -> None:
     logger.debug(f"MQTT broker said: {mqtt.connack_string(rc)}")
     if rc == 0:
@@ -142,44 +152,15 @@ def handle_mqtt_connack(client, userdata, flags, rc) -> None:
         f"Publish something to {GATEWAY['name']}/control and the messages will appear here.")
 
 
-# Handles an incoming message from the MQTT broker.
-def handle_mqtt_message(client, userdata, msg) -> None:
-    logger.info(
-        f"received msg | topic: {msg.topic} | payload: {msg.payload.decode('utf8')}")
+# Checks data if there is any abnormalities to raise alerts
 
 
-# Handles incoming serial data
-def handle_serial_data(s: serial.Serial) -> None:
-    parameter_name_list = ["temperature",
-                           "gas_status", "smoke_status", "motion_reading"]
-    output_dict = {}
-    output_str = ""
-
-    # 1. Decode the payload to a string
-    payload = s.readline().decode("utf-8").strip()
-
-    # 2. Split the string to a list
-    payload_list = payload.split(",")
-    # print(payload_list)
-
-    for i in range(0, len(parameter_name_list)):
-        output_dict[parameter_name_list[i]] = payload_list[i]
-
-    output_str = str(output_dict)
-    # # 5. Send to the broker with specified topic
-    # logger.info(
-    #     f"Publish | topic: {GATEWAY['full_reading']} | payload: {output_str}")
-    # mqttc.publish(
-    #     topic=f"{GATEWAY['full_reading']}", payload=output_str, qos=1)
-
-    alert_filter(output_dict)
-    motion_filter(output_dict)
-
-# a function that checks data if there is any 
 def alert_filter(output_dict: dict) -> None:
-    temperature_alert = "High Temperature Detected! "
-    gas_alert = "Combustible Gas Detetcted! "
-    smoke_alert = "Smoke Detected! "
+    time_stamp = datetime.now()
+
+    temperature_alert = f"{time_stamp}: High Temperature Detected! "
+    gas_alert = f"{time_stamp}: Combustible Gas Detetcted! "
+    smoke_alert = f"{time_stamp}: Smoke Detected! "
 
     if output_dict["temperature"] > 39:
         mqttc.publish(
@@ -201,17 +182,68 @@ def alert_filter(output_dict: dict) -> None:
     else:
         logger.info("=== All parameter reading normal. ===")
         logger.info(
-            f"Publish | topic: {GATEWAY['full_reading']} | payload: {str(output_dict)}")
+            f"Full Reading: {str(output_dict)}")
+
+# Checks data if the PIR sensor has not detected motion for > 5mins
 
 
 def motion_filter(output_dict: dict) -> None:
-    if output_dict["motion_reading"]:
+    motion_alert = "No people monitoring for more than 5 min!"
+    # if motion is dected
+    if output_dict["motion_reading"] == 1:
+        # update the motion time to the current time
         last_motion_time = time.time()
-    else: 
-        return
+    # else ther is no motion
+    else:
+        # calculate the duration
+        time_elapsed = time.time() - last_motion_time
+        # if the time elapsed has exceeded 5 minutes
+        if time_elapsed > 300:
+            mqttc.publish(
+                topic=f"{GATEWAY['alert']}", payload=motion_alert, qos=1)
+            logger.info(
+                f"Publish | topic: {GATEWAY['alert']} | payload: {motion_alert}")
 
-def write_to_csv(reading_list:list) -> None:
-    return 
+# Writes the reading to the csv file for data analysis
+
+
+def write_to_csv(reading_str: str) -> None:
+    # open the output csv file we created 
+    output_csv = open(output_csv_name)
+    # get the date time now 
+    now_datetime = datetime.now().strftime('%d/%m/%Y %H:%M:%S')
+    
+    line = (str(now_datetime) + "," + reading_str)
+    # write the line to csv 
+    output_csv.write(line)
+    output_csv.close()
+
+
+# Handles incoming serial data
+
+
+def handle_serial_data(s: serial.Serial) -> None:
+    parameter_name_list = ["temperature",
+                           "gas_status", "smoke_status", "motion_reading"]
+    output_dict = {}
+
+    # 1. Decode the payload to a string
+    payload = s.readline().decode("utf-8").strip()
+
+    # 2. Split the string to a list
+    payload_list = payload.split(",")
+    # print(payload_list)
+
+    for i in range(0, len(parameter_name_list)):
+        output_dict[parameter_name_list[i]] = payload_list[i]
+
+    # write the payload into CSV
+    write_to_csv(payload)
+    # check for abnormal readings alerts
+    alert_filter(output_dict)
+    # moniter the activity level
+    motion_filter(output_dict)
+
 
 def main() -> None:
     global mqttc
@@ -260,11 +292,13 @@ def main() -> None:
 
         # Loopy loop
         while True:
-
-            # Read from the serial port
-            if s.in_waiting > 0:
-                handle_serial_data(s)
-
+            try:
+                # Read from the serial port
+                if s.in_waiting > 0:
+                    handle_serial_data(s)
+            except KeyboardInterrupt:
+                print("CAUGHT CTRL-C, exiting!")
+                sys.exit(0)
     # mqttc.loop_stop()
 
 
