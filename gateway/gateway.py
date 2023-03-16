@@ -10,7 +10,7 @@ import sys
 import logging
 import argparse
 import time
-import datetime
+from datetime import datetime
 
 # Configure logging
 logging.basicConfig(format="%(asctime)s %(levelname)s %(filename)s:%(funcName)s():%(lineno)i: %(message)s",
@@ -30,8 +30,7 @@ GATEWAY = {
 }
 
 # create output cvs
-output_csv_name = "data_collection/data/" + \
-    datetime.now().strftime('%d%m%Y-%H') + "_data.csv"
+output_csv_name = datetime.now().strftime('%d%m%Y-%H') + "_data.csv"
 create_csv = open(output_csv_name, 'w')
 create_csv.close()
 
@@ -198,15 +197,25 @@ def motion_filter(output_dict: dict) -> None:
 
 
 def write_to_csv(reading_str: str) -> None:
-    # open the output csv file we created 
+    # open the output csv file we created
     output_csv = open(output_csv_name)
-    # get the date time now 
+    # get the date time now
     now_datetime = datetime.now().strftime('%d/%m/%Y %H:%M:%S')
-    
+
     line = (str(now_datetime) + "," + reading_str)
-    # write the line to csv 
+    # write the line to csv
     output_csv.write(line)
     output_csv.close()
+
+# Covert payload string from microbit to a dictionary, with parameter as a list
+
+
+def annotate_payload(payload: str, parameter_name_list: list) -> dict:
+    output_dict = {}
+    payload_list = payload.split(",")
+    for i in range(0, len(parameter_name_list)):
+        output_dict[parameter_name_list[i]] = payload_list[i]
+    return output_dict
 
 
 # Handles incoming serial data
@@ -215,17 +224,12 @@ def write_to_csv(reading_str: str) -> None:
 def handle_serial_data(s: serial.Serial) -> None:
     parameter_name_list = ["temperature",
                            "gas_status", "smoke_status", "motion_reading"]
-    output_dict = {}
 
-    # 1. Decode the payload to a string
+    # decode the payload to a string
     payload = s.readline().decode("utf-8").strip()
 
-    # 2. Split the string to a list
-    payload_list = payload.split(",")
-    # print(payload_list)
-
-    for i in range(0, len(parameter_name_list)):
-        output_dict[parameter_name_list[i]] = payload_list[i]
+    # annotate the payload string to a dict with parameter name
+    output_dict = annotate_payload(payload, parameter_name_list)
 
     # write the payload into CSV
     write_to_csv(payload)
@@ -233,6 +237,13 @@ def handle_serial_data(s: serial.Serial) -> None:
     alert_filter(output_dict)
     # moniter the activity level
     motion_filter(output_dict)
+
+# Handles an incoming message from the MQTT broker.
+
+
+def handle_mqtt_message(client, userdata, msg) -> None:
+    logger.info(
+        f"received msg | topic: {msg.topic} | payload: {msg.payload.decode('utf8')}")
 
 
 def main() -> None:
