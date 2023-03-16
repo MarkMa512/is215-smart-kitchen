@@ -5,8 +5,8 @@ from datetime import datetime
 
 test_payload_str_normal_1 = "29, 0, 0, 1"
 test_payload_str_normal_2 = "29, 0, 0, 1"
-test_payload_str_normal_2 = "29, 0, 0, 1"
-test_payload_str_normal_2 = "29, 0, 0, 1"
+test_payload_str_normal_3 = "29, 0, 0, 1"
+test_payload_str_normal_3 = "29, 0, 0, 1"
 
 # a dictionary of the topics
 GATEWAY = {
@@ -28,4 +28,4 @@ parameter_name_list = ["temperature",
                        "gas_status", "smoke_status", "motion_reading"]
 
 print(str(gateway.annotate_payload(test_payload_str_normal_1, parameter_name_list)))
-print (str(gateway.alert_filter()))
+print(str(gateway.alert_filter()))

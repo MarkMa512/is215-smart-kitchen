@@ -27,7 +27,7 @@ smoke_threshold = 600
 
 while True:
     # obtain gas reading 
-    gas_reading = gas_pin.read_analog()
+    gas_reading = gas_pin.read_digital()
     # If the voltage reading is less than the threshold value
     if gas_reading >= gas_threshold:
         # combustible gas is detected 
@@ -35,20 +35,20 @@ while True:
     # if combustible gas is dected
     if gas_status != 0:
         # play the alert music
-        music.play(music.DADADADUM)
+        # music.play(music.DADADADUM)
         # show the warning image
         display.show(Image.ANGRY)
     
     # obtain smoke reading
-    smoke_reading = smoke_pin.read_analog()
+    smoke_reading = smoke_pin.read_digital()
     if smoke_reading >= smoke_threshold: 
         smoke_status = 1
     if smoke_status != 0: 
-        music.play(music.BA_DING)
+        # music.play(music.BA_DING)
         display.show(Image.CONFUSED)
     
     # Send the data to serial reading 
-    print("g:", gas_reading, "s:", smoke_reading)
+    # print("g:", gas_reading, "s:", smoke_reading)
     print(temperature(),",", gas_status, ",", smoke_status,",", motion_reading)
     
     # clear the gas status and smoke status with long press on button A

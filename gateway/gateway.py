@@ -18,7 +18,8 @@ logging.basicConfig(format="%(asctime)s %(levelname)s %(filename)s:%(funcName)s(
 logger = logging.getLogger(__name__)
 
 # initlize the last motion time for people presence monitoring
-last_motion_time = time.time()
+last_motion_time = datetime.now()
+print(str(last_motion_time))
 
 mqttc = None
 
@@ -26,7 +27,8 @@ mqttc = None
 GATEWAY = {
     "root": "is215g11t04",
     "full_reading": "is215g11t04/full_reading",
-    "alert": "is215g11t04/alert"
+    "alert": "is215g11t04/alert",
+    "control": "is215g11t04/control"
 }
 
 # create output cvs
@@ -135,10 +137,10 @@ def handle_mqtt_connack(client, userdata, flags, rc) -> None:
 
     # Subscribing in on_connect() means that if we lose the connection and
     # reconnect then subscriptions will be renewed.
-    client.subscribe(f"{GATEWAY['name']}/control")
-    logger.info(f"Subscribed to: {GATEWAY['name']}/control")
+    client.subscribe(f"{GATEWAY['control']}")
+    logger.info(f"Subscribed to: {GATEWAY['control']}")
     logger.info(
-        f"Publish something to {GATEWAY['name']}/control and the messages will appear here.")
+        f"Publish something to {GATEWAY['control']} and the messages will appear here.")
 
 
 # Checks data if there is any abnormalities to raise alerts
@@ -151,7 +153,7 @@ def alert_filter(output_dict: dict) -> None:
     gas_alert = f"{time_stamp}: Combustible Gas Detetcted! "
     smoke_alert = f"{time_stamp}: Smoke Detected! "
 
-    if output_dict["temperature"] > 39:
+    if int(output_dict["temperature"]) > 39:
         mqttc.publish(
             topic=f"{GATEWAY['alert']}", payload=temperature_alert, qos=1)
         logger.info(
@@ -177,17 +179,18 @@ def alert_filter(output_dict: dict) -> None:
 
 
 def motion_filter(output_dict: dict) -> None:
+    global last_motion_time
     motion_alert = "No people monitoring for more than 5 min!"
     # if motion is dected
-    if output_dict["motion_reading"] == 1:
+    if output_dict["motion_reading"] == "1":
         # update the motion time to the current time
-        last_motion_time = time.time()
+        last_motion_time = datetime.now()
     # else ther is no motion
     else:
         # calculate the duration
-        time_elapsed = time.time() - last_motion_time
+        time_elapsed = datetime.now() - last_motion_time
         # if the time elapsed has exceeded 5 minutes
-        if time_elapsed > 300:
+        if time_elapsed.total_seconds() > 300:
             mqttc.publish(
                 topic=f"{GATEWAY['alert']}", payload=motion_alert, qos=1)
             logger.info(
@@ -197,12 +200,13 @@ def motion_filter(output_dict: dict) -> None:
 
 
 def write_to_csv(reading_str: str) -> None:
+    global output_csv_name
     # open the output csv file we created
-    output_csv = open(output_csv_name)
+    output_csv = open(output_csv_name, 'a', newline='')
     # get the date time now
     now_datetime = datetime.now().strftime('%d/%m/%Y %H:%M:%S')
 
-    line = (str(now_datetime) + "," + reading_str)
+    line = (str(now_datetime) + "," + reading_str + "\n")
     # write the line to csv
     output_csv.write(line)
     output_csv.close()
@@ -211,10 +215,13 @@ def write_to_csv(reading_str: str) -> None:
 
 
 def annotate_payload(payload: str, parameter_name_list: list) -> dict:
+    # print(payload)
+    # print(parameter_name_list)
     output_dict = {}
     payload_list = payload.split(",")
     for i in range(0, len(parameter_name_list)):
-        output_dict[parameter_name_list[i]] = payload_list[i]
+        output_dict[parameter_name_list[i]] = int(payload_list[i])
+    # print(str(output_dict))
     return output_dict
 
 
