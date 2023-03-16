@@ -234,6 +234,8 @@ def handle_serial_data(s: serial.Serial) -> None:
 
     # decode the payload to a string
     payload = s.readline().decode("utf-8").strip()
+    # remove the space caused by microbit's serial output limitations 
+    payload = payload.replace(" ", "")
 
     # annotate the payload string to a dict with parameter name
     output_dict = annotate_payload(payload, parameter_name_list)
