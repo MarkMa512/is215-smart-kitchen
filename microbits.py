@@ -60,4 +60,8 @@ while True:
         gas_status = 0
         smoke_status = 0
         display.clear()
+
+    # for testing and simulation purposes
+    if button_b.is_pressed():
+        gas_status = 1
     sleep(2000)

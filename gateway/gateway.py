@@ -153,7 +153,7 @@ def alert_filter(output_dict: dict) -> None:
     gas_alert = f"{time_stamp}: Combustible Gas Detetcted! "
     smoke_alert = f"{time_stamp}: Smoke Detected! "
 
-    if int(output_dict["temperature"]) > 39:
+    if output_dict["temperature"] > 39:
         mqttc.publish(
             topic=f"{GATEWAY['alert']}", payload=temperature_alert, qos=1)
         logger.info(
