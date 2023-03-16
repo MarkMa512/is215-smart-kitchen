@@ -31,7 +31,7 @@ GATEWAY = {
     "control": "is215g11t04/control"
 }
 
-# create output cvs
+# create output cvs file for data logging and analytics
 output_csv_name = datetime.now().strftime('%d%m%Y-%H') + "_data.csv"
 create_csv = open(output_csv_name, 'w')
 create_csv.close()
@@ -146,26 +146,31 @@ def handle_mqtt_connack(client, userdata, flags, rc) -> None:
 # Checks data if there is any abnormalities to raise alerts
 
 
-def alert_filter(output_dict: dict) -> None:
+def alert_filter(payload_dict: dict) -> None:
+    # obtain the current time stamp
     time_stamp = datetime.now()
 
+    # set threshold temperature
+    threshold_temperature = 35
+
+    # alert message for different case scenario
     temperature_alert = f"{time_stamp}: High Temperature Detected! "
     gas_alert = f"{time_stamp}: Combustible Gas Detetcted! "
     smoke_alert = f"{time_stamp}: Smoke Detected! "
 
-    if output_dict["temperature"] > 39:
+    if payload_dict["temperature"] > threshold_temperature:
         mqttc.publish(
             topic=f"{GATEWAY['alert']}", payload=temperature_alert, qos=1)
         logger.info(
             f"Publish | topic: {GATEWAY['alert']} | payload: {temperature_alert}")
 
-    elif output_dict["gas_status"] != 0:
+    elif payload_dict["gas_status"] != 0:
         mqttc.publish(
             topic=f"{GATEWAY['alert']}", payload=gas_alert, qos=1)
         logger.info(
             f"Publish | topic: {GATEWAY['alert']} | payload: {gas_alert}")
 
-    elif output_dict["smoke_status"] != 0:
+    elif payload_dict["smoke_status"] != 0:
         mqttc.publish(
             topic=f"{GATEWAY['alert']}", payload=smoke_alert, qos=1)
         logger.info(
@@ -173,16 +178,16 @@ def alert_filter(output_dict: dict) -> None:
     else:
         logger.info("=== All parameter reading normal. ===")
         logger.info(
-            f"Full Reading: {str(output_dict)}")
+            f"Full Reading: {str(payload_dict)}")
 
 # Checks data if the PIR sensor has not detected motion for > 5mins
 
 
-def motion_filter(output_dict: dict) -> None:
+def motion_filter(payload_dict: dict) -> None:
     global last_motion_time
     motion_alert = "No people monitoring for more than 5 min!"
     # if motion is dected
-    if output_dict["motion_reading"] == "1":
+    if payload_dict["motion_reading"] == "1":
         # update the motion time to the current time
         last_motion_time = datetime.now()
     # else ther is no motion
@@ -199,14 +204,14 @@ def motion_filter(output_dict: dict) -> None:
 # Writes the reading to the csv file for data analysis
 
 
-def write_to_csv(reading_str: str) -> None:
+def write_to_csv(payload_str: str) -> None:
     global output_csv_name
     # open the output csv file we created
     output_csv = open(output_csv_name, 'a', newline='')
     # get the date time now
     now_datetime = datetime.now().strftime('%d/%m/%Y %H:%M:%S')
 
-    line = (str(now_datetime) + "," + reading_str + "\n")
+    line = (str(now_datetime) + "," + payload_str + "\n")
     # write the line to csv
     output_csv.write(line)
     output_csv.close()
@@ -214,11 +219,11 @@ def write_to_csv(reading_str: str) -> None:
 # Covert payload string from microbit to a dictionary, with parameter as a list
 
 
-def annotate_payload(payload: str, parameter_name_list: list) -> dict:
+def annotate_payload(payload_str: str, parameter_name_list: list) -> dict:
     # print(payload)
     # print(parameter_name_list)
     output_dict = {}
-    payload_list = payload.split(",")
+    payload_list = payload_str.split(",")
     for i in range(0, len(parameter_name_list)):
         output_dict[parameter_name_list[i]] = int(payload_list[i])
     # print(str(output_dict))
@@ -233,19 +238,19 @@ def handle_serial_data(s: serial.Serial) -> None:
                            "gas_status", "smoke_status", "motion_reading"]
 
     # decode the payload to a string
-    payload = s.readline().decode("utf-8").strip()
-    # remove the space caused by microbit's serial output limitations 
-    payload = payload.replace(" ", "")
+    payload_str = s.readline().decode("utf-8").strip()
+    # remove the space caused by microbit's serial output limitations
+    payload_str = payload_str.replace(" ", "")
 
     # annotate the payload string to a dict with parameter name
-    output_dict = annotate_payload(payload, parameter_name_list)
+    payload_dict = annotate_payload(payload_str, parameter_name_list)
 
     # write the payload into CSV
-    write_to_csv(payload)
+    write_to_csv(payload_str)
     # check for abnormal readings alerts
-    alert_filter(output_dict)
+    alert_filter(payload_dict)
     # moniter the activity level
-    motion_filter(output_dict)
+    motion_filter(payload_dict)
 
 # Handles an incoming message from the MQTT broker.
 

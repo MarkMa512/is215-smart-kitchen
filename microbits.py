@@ -12,7 +12,7 @@ motion_reading = 0
 gas_pin = pin0
 # pin 1 for MQ2 smoke sensor
 smoke_pin = pin1
-# pin2
+# pin2 for PIR sensor
 motion_pin = pin2
 
 # Initialize status of gas and smoke reading
@@ -23,7 +23,6 @@ smoke_status = 0
 # adjust the threshold for caliberation under differnt envrionments
 gas_threshold = 400
 smoke_threshold = 600
-
 
 while True:
     # obtain gas reading
