@@ -1,5 +1,6 @@
 from microbit import *
 import music
+from machine import time_pulse_us
 
 # Initialize the reading variables
 gas_reading = 0
@@ -11,9 +12,16 @@ motion_reading = 0
 # pin0 for MQ5 gas sensor
 gas_pin = pin0
 # pin 1 for MQ2 smoke sensor
-smoke_pin = pin1
+smoke_pin = pin2
 # pin2 for PIR sensor
-motion_pin = pin2
+motion_pin = pin8
+
+# set up the sonar
+sonar_trig = pin15
+sonar_echo = pin16
+sonar_trig.write_digital(0)
+sonar_echo.read_digital()
+
 
 # Initialize status of gas and smoke reading
 gas_status = 0
@@ -46,10 +54,21 @@ while True:
         # music.play(music.BA_DING)
         display.show(Image.CONFUSED)
 
+    # people counting status: ultrasonic ranger
+    sonar_trig.write_digital(1)
+    sonar_trig.write_digital(0)
+
+    micros = time_pulse_us(sonar_echo, 1)
+    t_echo = micros / 1000000
+
+    dist_cm = (t_echo / 2) * 34300
+
+    dist_str = str(int(dist_cm))
+
     # Send the data to serial reading
     # print("g:", gas_reading, "s:", smoke_reading)
     print(temperature(), ",", gas_status, ",",
-          smoke_status, ",", motion_reading)
+          smoke_status, ",", dist_str)
 
     # This does not work for microbit python
     # print(f"{temperature()},{gas_status},{smoke_status},{motion_reading}")
