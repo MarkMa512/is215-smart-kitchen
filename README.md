@@ -10,10 +10,10 @@
 
 <!-- PROJECT LOGO -->
 <br />
-<div align="center">
+<!-- <div align="center">
   <a href="https://github.com/MarkMa512/smart-hostel">
     <img src="media/team_logo.png" alt="Logo" width="137" height="69">
-  </a>
+  </a> -->
 
 <h3 align="center">Smart Kitchen Management System</h3>
 
@@ -77,6 +77,10 @@
 
 ### Built With
 * [Micro:bits](https://microbit.org/)
+* [Python](https://www.python.org)
+* [Go](https://go.dev)
+* [MQTT Client Telegram Bot](https://github.com/xDWart/mqtg-bot)
+
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -87,7 +91,7 @@
 
 - [`/microbit`](): program for microbit micro-controller
 
-- [`/mqtg-bot`](https://github.com/MarkMa512/smart-hostel/tree/master/front_end): mqtg-bot backend program
+- [`/mqtg-bot`](https://github.com/MarkMa512/smart-hostel/tree/master/front_end): mqtg-bot backend program, forked from: [MQTT Client Telegram Bot](https://github.com/xDWart/mqtg-bot)
 
 
 
@@ -106,7 +110,7 @@
 ## Getting Started
 
 ### Prerequisites
-1. Ensure [Python 3.9](https://www.python.org/downloads/) or higher is installed 
+1. Ensure [Python 3.9](https://www.python.org/downloads/) or higher is installed; Ensure [pip](https://pip.pypa.io/en/stable/installation/) is installed. 
 2. Ensure [go1.20.2](https://go.dev/doc/install) or higher is installed
 
 ### Sensors and device configuration
@@ -152,15 +156,15 @@
     cd gateway
     ```
   - Install the dependencies 
-    ```
+    ```sh
     pip install -r requirement.txt
     ```
   - run `gateway.py`:  
-    ```
+    ```sh
     python3 gateway.py
     ```
     or 
-    ```
+    ```sh
     python gateway.py
     ```
 
@@ -188,7 +192,7 @@
 
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
-
--
+- A special thank to [Kunyah Cafe](https://www.fortitudeculina.org/) for supporting us with the project. 
+- A special thank to [MQTT Client Telegram Bot](https://github.com/xDWart/mqtg-bot) for the backend go client program. 
 
 <p align="right">(<a href="#top">back to top</a>)</p>
