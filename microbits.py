@@ -66,7 +66,7 @@ while True:
     dist_str = str(int(dist_cm))
 
     # Send the data to serial reading
-    # print("g:", gas_reading, "s:", smoke_reading)
+    print("g:", gas_reading, "s:", smoke_reading)
     print(temperature(), ",", gas_status, ",",
           smoke_status, ",", dist_str)
 
