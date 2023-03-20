@@ -114,11 +114,11 @@
 2. Ensure [go1.20.2](https://go.dev/doc/install) or higher is installed
 
 ### Sensors and device information and configuration
-1. microbit and sensors
+1. microbit and sensors setup 
 - Micro-controller: [Micro:bit V2](https://microbit.org/new-microbit/)
 - Micro-controller Program: [`/microbit/microbit.py`](https://github.com/MarkMa512/smart-hostel/blob/master/microbit/microbit.py) 
 - Extension board: [KittenBot IOBIT V2.0 for micro:bit](https://www.kittenbot.cc/products/kittenbot-iobit-v2-0-for-microbit) 
-- Sensors: 
+- Sensors configuration: 
   - [MQ5 Gas Sensor](https://wiki.seeedstudio.com/Grove-Gas_Sensor-MQ5/)
     - AO: Pin0 S
     - DO: Empty
@@ -134,6 +134,11 @@
     - Trig: Pin15 S
     - Echo: Pin16 S
     - Gnd: G 
+  2. micrboit program
+    a. connect the Microbit to your machine via USB port.
+    b. visit: [micro:bit Python Editor](https://python.microbit.org/v/3)
+    c. copy the content from [`/microbit/microbit.py`](https://github.com/MarkMa512/smart-hostel/blob/master/microbit/microbit.py)  to the editor 
+    d. click `Send to micro:bit` button to flash the program to the microbit. 
 <!-- <img
   align="center"
   src="media/door_microbit_setup.png"
@@ -168,7 +173,7 @@
     python gateway.py
     ```
 
-4. Back-end Machine and Telegram Setup: Please refer to [`mqtg-bot/README.md`](https://github.com/MarkMa512/smart-hostel/tree/master/back_end#readme)
+4. Back-end Machine and Telegram Bot Setup: Please refer to [`mqtg-bot/README.md`](https://github.com/MarkMa512/smart-hostel/tree/master/back_end#readme)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
