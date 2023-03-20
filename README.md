@@ -66,7 +66,7 @@
 ### Setup and Screenshot
 | Setup  | Screenshot |
 | ------------- | ------------- |
-| <img align="center" src="media/setup.png" style="display: inline-block; margin: 0 auto; max-width: 200px"> | <img align="center" src="media/bot_screenshot.png" style="display: inline-block; margin: 0 auto; width: 160px"> |
+| <img align="center" src="media/setup.png" style="display: inline-block; margin: 0 auto; max-width: 100%"> | <img align="center" src="media/bot_screenshot.png" style="display: inline-block; margin: 0 auto; max-width:50%"> |
 
 
 ### Video Demo
