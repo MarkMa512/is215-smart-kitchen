@@ -1,0 +1,3 @@
+[submodule "mqtg-bot"]
+	path = mqtg-bot
+	url = https://github.com/MarkMa512/mqtg-bot.git
