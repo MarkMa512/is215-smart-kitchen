@@ -77,8 +77,8 @@
   src="media/bot_screenshot.png"
   alt="bot_screenshot"
   title="bot_screenshot"
-  style="display: inline-block; margin: 0 auto; max-width: 200px">
-  
+  style="display: inline-block; margin: 0 auto; max-width: 50px">
+
 
 ### Video Demo
 <!-- [![Video Demo](https://img.youtube.com/vi/VCjBWMjaBcI/0.jpg)](https://www.youtube.com/watch?v=VCjBWMjaBcI) -->
