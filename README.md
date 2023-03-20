@@ -63,9 +63,9 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-### Setup and Screenshoot
-
-
+### Setup and Screenshot
+| Setup  | Screenshot |
+| ------------- | ------------- |
 | <img align="center" src="media/setup.png" style="display: inline-block; margin: 0 auto; max-width: 200px"> | <img align="center" src="media/bot_screenshot.png" style="display: inline-block; margin: 0 auto; max-width: 50px"> |
 
 
