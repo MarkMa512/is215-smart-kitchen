@@ -153,14 +153,14 @@ def alert_filter(payload_dict: dict) -> None:
     time_stamp = datetime.now()
 
     # set threshold temperature
-    threshold_temperature = 35
+    TEMPERATURE_THRESHOLD = 35
 
     # alert message for different case scenario
     temperature_alert = f"{time_stamp}: High Temperature Detected! "
     gas_alert = f"{time_stamp}: Combustible Gas Detetcted! "
     smoke_alert = f"{time_stamp}: Smoke Detected! "
 
-    if payload_dict["temperature"] > threshold_temperature:
+    if payload_dict["temperature"] > TEMPERATURE_THRESHOLD:
         mqttc.publish(
             topic=f"{GATEWAY['alert']}", payload=temperature_alert, qos=1)
         logger.info(

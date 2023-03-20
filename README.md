@@ -113,23 +113,23 @@
 1. Ensure [Python 3.9](https://www.python.org/downloads/) or higher is installed; Ensure [pip](https://pip.pypa.io/en/stable/installation/) is installed. 
 2. Ensure [go1.20.2](https://go.dev/doc/install) or higher is installed
 
-### Sensors and device configuration
+### Sensors and device information and configuration
 1. microbit and sensors
 - Micro-controller: [Micro:bit V2](https://microbit.org/new-microbit/)
 - Micro-controller Program: [`/microbit/microbit.py`](https://github.com/MarkMa512/smart-hostel/blob/master/microbit/microbit.py) 
 - Extension board: [KittenBot IOBIT V2.0 for micro:bit](https://www.kittenbot.cc/products/kittenbot-iobit-v2-0-for-microbit) 
 - Sensors: 
-  - MQ5 Sensor 
+  - [MQ5 Gas Sensor](https://wiki.seeedstudio.com/Grove-Gas_Sensor-MQ5/)
     - AO: Pin0 S
     - DO: Empty
     - GND: G
     - VCC: 3V
-  - MQ2 Sensor 
+  - [MQ2 Gas/Smoke Sensor](https://wiki.seeedstudio.com/Grove-Gas_Sensor-MQ2/)
     - AO: Pin2 S
     - DO: Empty
     - GND: G
     - VCC: 3V
-  - HC-SR-04 Ultrasonic Distance Sensor
+  - [HC-SR-04 Ultrasonic Distance Sensor](https://randomnerdtutorials.com/complete-guide-for-ultrasonic-sensor-hc-sr04/)
     - Vcc: 3V
     - Trig: Pin15 S
     - Echo: Pin16 S
@@ -175,16 +175,28 @@
 
 <!-- ROADMAP -->
 ## Roadmap
-- [x] Event 1: Temperature exceeded ``
-  - The Light sensor on sensor_microbit_door_microbit (implemented) and sensor_microbit_window_microbit (planned) detects the light level and compares it against a threshhold value. 
-- [x] Event 2: Make large noise after lights out hours 
-  - The Loudness sensor on sensor_microbit_door_microbit (implemented) detects the loudness level and compare it against a threshold value. 
-- [x] Event 3: Climbing out of window
-  - PIR Motion sensor connected to sensor_microbit_window_microbit detect any movement outside of the window, and the Light sensor on ensor_microbit_window_microbit (planned) detect if there is any changes to the light level as people moves out. 
-- [x] Event 4: Leave room after lights out hour 
-    - People Counting: Activated by magnetic sensor detecting the magnetic door open, the Ultrasonic Distance Sensor facing inside the room detects a reduction in the distance, thus minus the people count by 1. 
-- [x] Event 5:  Movement inside the room
-  - Movement detection: When the door is locked (detected by the magnetic sensor), the ultasonic distance sensor inside and outside of the room are re-purposed as detecting movement inside the room or along the corridor. 
+- [x] Event 1: Temperature exceeded TEMPERATURE_THRESHOLD 
+  - Temperature readings are read from Microbit's inbuilt thermometer, and the reading has been passed to the [`/gateway/gateway.py`]() through serial communication. If the temperature has exceed the `TEMPERATURE_THRESHOLD` defined in the `alert_filter()` function, a high temperature alert will be sent off from the gateway program to the MQTT broker. 
+  - Scenario: 
+    - Fridge temperature monitoring 
+    - Oven/Stove surrouding temperature monitoring
+
+- [x] Event 2: Combustible gas leakage
+  - Voltage readings are read off from the MQ5 sensor. When there is presence of combustible gases such as LPG and Natural Gas, the voltage will increase to above `GAS_THRESHOLD` defined in the [`/microbit/microbit.py`](), changing `gas_status` from 0 to 1. This will trigger the alarm and the display light on Microbit. This change will be detected by [`/gateway/gateway.py`]() via `alert_filter()` function, and an alart will be sent out to the MQTT broker. 
+  - Scenario: 
+    - Gas stove monitoring
+    - Food storage monitoring (by changing gas sensor to MQ135 Air Quality Sensor)
+
+- [x] Event 3: Smoke detected
+  - Voltage readings are read off from the MQ2 sensor. When there is presence of smoke, the voltage will increase to above `SMOKE_THRESHOLD` defined in the [`/microbit/microbit.py`](), changing `smoke_status` from 0 to 1. This will trigger the alarm and the display light on Microbit. This change will be detected by [`/gateway/gateway.py`]() via `alert_filter()` function, and an alart will be sent out to the MQTT broker. 
+  - Scenario: 
+    - Fire and smoke detection
+
+- [x] Event 4: Unguarded stove / no motion detected
+    - Distance reading are read off from the HC-SR-04 Ultrasonic Distance Sensor. When there are motions, the distance reading fluctuates, and the timing are recorded as `last_motion_time`. When there is no motion detetced for more than `TIME_THRESHOLD` defined in the `sonar_motion_filter()` function in [`/gateway/gateway.py`](), an alarm will be send out to the MQTT broker. 
+    - Scenario: 
+      - Ensuring critial locations are guarded by person
+      - Detect the presence of person / object
 
 
 <p align="right">(<a href="#top">back to top</a>)</p>
