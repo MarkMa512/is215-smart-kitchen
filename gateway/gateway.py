@@ -17,9 +17,12 @@ logging.basicConfig(format="%(asctime)s %(levelname)s %(filename)s:%(funcName)s(
                     datefmt="%Y-%m-%d %H:%M:%S", level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-# initlize the last motion time for people presence monitoring
+# initlize the last motion time for continued motion monitoring
 last_motion_time = datetime.now()
 print(str(last_motion_time))
+
+# initlize the last distance for continued motion monitoring
+last_distance = None
 
 mqttc = None
 
@@ -176,14 +179,14 @@ def alert_filter(payload_dict: dict) -> None:
         logger.info(
             f"Publish | topic: {GATEWAY['alert']} | payload: {smoke_alert}")
     else:
-        logger.info("=== All parameter reading normal. ===")
+        logger.info("========= All parameter reading normal. =========")
         logger.info(
             f"Full Reading: {str(payload_dict)}")
 
 # Checks data if the PIR sensor has not detected motion for > 5mins
 
 
-def motion_filter(payload_dict: dict) -> None:
+def pir_motion_filter(payload_dict: dict) -> None:
     global last_motion_time
     motion_alert = "No people monitoring for more than 5 min!"
     # if motion is dected
@@ -200,6 +203,49 @@ def motion_filter(payload_dict: dict) -> None:
                 topic=f"{GATEWAY['alert']}", payload=motion_alert, qos=1)
             logger.info(
                 f"Publish | topic: {GATEWAY['alert']} | payload: {motion_alert}")
+
+# Checks sonar data's distance reading, detect if there is any motions
+
+
+def sonar_motion_filter(payload_dict: dict) -> None:
+
+    motion_alert = "No people monitoring for more than 5 min!"
+
+    # set the threshold distance for motion detection as 2 cm
+    DIST_THRESHOLD = 2
+
+    # set the threshold time for no motion as 5 min (300 s)
+    TIME_THRESHOLD = 300
+
+    global last_distance
+    global last_motion_time
+
+    # if the last_distance has not been initialized
+    if last_distance is None:
+        # initialize it with the current reading
+        last_distance = payload_dict["distance"]
+
+    # calculate the distance difference as compared to the previous reading
+    distance_diff = abs(payload_dict["disntance"] - last_distance)
+
+    # if motion is detected / exceeded the threshold
+    if distance_diff >= DIST_THRESHOLD:
+        print("motion detected")
+        # update the last_motion_time to now
+        last_motion_time = datetime.now()
+    else:
+        print("no motion detetced")
+        # calculate the duration
+        time_elapsed = datetime.now() - last_motion_time
+        # if the time elapsed has exceeded 5 minutes
+        if time_elapsed.total_seconds() > TIME_THRESHOLD:
+            mqttc.publish(
+                topic=f"{GATEWAY['alert']}", payload=motion_alert, qos=1)
+            logger.info(
+                f"Publish | topic: {GATEWAY['alert']} | payload: {motion_alert}")
+
+    # update the last_distance to current distance reading
+    last_distance = payload_dict["distance"]
 
 # Writes the reading to the csv file for data analysis
 
@@ -235,7 +281,7 @@ def annotate_payload(payload_str: str, parameter_name_list: list) -> dict:
 
 def handle_serial_data(s: serial.Serial) -> None:
     parameter_name_list = ["temperature",
-                           "gas_status", "smoke_status", "motion_reading"]
+                           "gas_status", "smoke_status", "distance"]
 
     # decode the payload to a string
     payload_str = s.readline().decode("utf-8").strip()
@@ -250,7 +296,8 @@ def handle_serial_data(s: serial.Serial) -> None:
     # check for abnormal readings alerts
     alert_filter(payload_dict)
     # moniter the activity level
-    motion_filter(payload_dict)
+    # pir_motion_filter(payload_dict)
+    sonar_motion_filter(payload_dict)
 
 # Handles an incoming message from the MQTT broker.
 
