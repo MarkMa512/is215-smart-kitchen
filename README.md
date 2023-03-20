@@ -81,37 +81,25 @@
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ### Directories
-<!-- - [`/back_end`](https://github.com/MarkMa512/smart-hostel/tree/master/back_end): Flask backend application that interact with InfluxDB and provides REST API for the Front-end dashboard to interact  with.  
-
-- [`/data_collection`](https://github.com/MarkMa512/smart-hostel/tree/master/data_collection): Data collection for sense making and visualization.  
-
-    - [`/data_collection/data`](https://github.com/MarkMa512/smart-hostel/tree/master/data_collection/data)  
-    The light and sound data collected on 11/10/22 and 13/10/22 from a room.  
-    Format: date, time, sounds, light  
-    
-  - [`/data_collection/data_reciever`](https://github.com/MarkMa512/smart-hostel/tree/master/data_collection/data_receiver)  
-    A node.js application that reads the serial data from reciever microbit. 
-
-  - [`/data_collection/desktop_client`](https://github.com/MarkMa512/smart-hostel/tree/master/data_collection/desktop_client)  
-    Desktop client written in Python that logs the data to CSV file into the [`/data_collection/data`](https://github.com/MarkMa512/smart-hostel/tree/master/data_collection/data) directory.  
-
-  - [`/data_collection/dummy_data`](https://github.com/MarkMa512/smart-hostel/tree/master/data_collection/dummy_data) 
-    Simulated data for demonstration purposes
-
-- [`/front_end`](https://github.com/MarkMa512/smart-hostel/tree/master/front_end): Vue.js front-end dashboard 
+- [`/gateway`](https://github.com/MarkMa512/smart-hostel/tree/master/sensor_and_gateway): gateway porgam
 
 - [`/media`](https://github.com/MarkMa512/smart-hostel/tree/master/media): photos of models, setup and illustrations
 
-- [`/sensor_and_gateway`](https://github.com/MarkMa512/smart-hostel/tree/master/sensor_and_gateway): Microbit programs and gateway porgam -->
+- [`/microbit`](): program for microbit micro-controller
+
+- [`/mqtg-bot`](https://github.com/MarkMa512/smart-hostel/tree/master/front_end): mqtg-bot backend program
+
+
+
 
 ### Architectural Diagram
 
-<!-- <img
+<img
   align="center"
   src="media/architectural_design.png"
   alt="dashboard_table"
   title="dashboard_table"
-  style="display: inline-block; margin: 0 auto; max-width: 200px"> -->
+  style="display: inline-block; margin: 0 auto; max-width: 200px">
 
 
 <!-- GETTING STARTED -->
@@ -119,63 +107,49 @@
 
 ### Prerequisites
 1. Ensure [Python 3.9](https://www.python.org/downloads/) or higher is installed 
-<!-- 2. Ensure [Node.js 16](https://nodejs.org/en/) or higher is installed -->
+2. Ensure [go1.20.2](https://go.dev/doc/install) or higher is installed
 
 ### Sensors and device configuration
-<!-- 1. sensor_microbit_door_microbit
+1. microbit and sensors
 - Micro-controller: [Micro:bit V2](https://microbit.org/new-microbit/)
-- Micro-controller Program: [`/sensor_and_gateway/sensor_door_microbit.py`](https://github.com/MarkMa512/smart-hostel/blob/master/sensor_and_gateway/sensor_door_microbit.py) 
-- Extension board: [Octopus:bit(EF03405)](https://www.elecfreaks.com/learn-en/microbitExtensionModule/octopus_bit.html) 
+- Micro-controller Program: [`/microbit/microbit.py`](https://github.com/MarkMa512/smart-hostel/blob/master/microbit/microbit.py) 
+- Extension board: [KittenBot IOBIT V2.0 for micro:bit](https://www.kittenbot.cc/products/kittenbot-iobit-v2-0-for-microbit) 
 - Sensors: 
+  - MQ5 Sensor 
+    - AO: Pin0 S
+    - DO: Empty
+    - GND: G
+    - VCC: 3V
+  - MQ2 Sensor 
+    - AO: Pin2 S
+    - DO: Empty
+    - GND: G
+    - VCC: 3V
   - HC-SR-04 Ultrasonic Distance Sensor
-    - sonar_out: 
-      - Vcc: Pin12 3V
-      - Trig: Pin12 S
-      - Echo: Pin13 S
-      - Gnd: Pin13 G
-    - sonar_in: 
-      - Vcc: Pin15 3V
-      - Trig: Pin15 S
-      - Echo: Pin16 S
-      - Gnd: Pin16 G
-  - [DFROBOT Magnetic Sensor V2](https://wiki.dfrobot.com/Digital_magnetic_sensor_SKU__DFR0033)
-    - Please align the color of the cable to that of the Octopus:bit board, at Pin0. 
-<img
+    - Vcc: 3V
+    - Trig: Pin15 S
+    - Echo: Pin16 S
+    - Gnd: G 
+<!-- <img
   align="center"
   src="media/door_microbit_setup.png"
   alt="dashboard_table"
   title="dashboard_table"
-  style="display: inline-block; margin: 0 auto; max-width: 200px">
+  style="display: inline-block; margin: 0 auto; max-width: 200px"> -->
 
-
-2. sensor_microbit_window_microbit
-- Micro-controller: [Micro:bit V1](https://microbit.org/new-microbit/)
-- Micro-controller Program: [`/sensor_and_gateway/sensor_window_microbit.py`](https://github.com/MarkMa512/smart-hostel/blob/master/sensor_and_gateway/sensor_window_microbit.py)  
-- Extension board: [YWRobot micro:bit IO Extension Board](http://wiki.ywrobot.net/index.php?title=(SKU:BRD080003)IO_Extension_Board扩展板适用于Micro:bit)
-- Sensors
-  - [HC SR501 PIR Motion Sensor](https://lastminuteengineers.com/pir-sensor-arduino-tutorial/)
-    - GND: G
-    - OUT: Pin0
-    - VCC: 3V
-
-
-3. reciever_microbit
-- Micro-controller: [Micro:bit V1](https://microbit.org/new-microbit/)
-- Micro-controller Program: [`/sensor_and_gateway/reciever_microbit.py`](https://github.com/MarkMa512/smart-hostel/blob/master/sensor_and_gateway/reciever_microbit.py) 
-- Connect to the Gateway machine via USB cable.  -->
 
 ### Installation
 
-<!-- 1. Clone the repo onto the respective machines
+1. Clone the repo onto the respective machines
    ```sh
-   git clone https://github.com/MarkMa512/smart-hostel.git
+    git clone --recursive https://github.com/MarkMa512/smart-hostel.git
    ```
 2. Setup the Microbits according to <a href="#sensors-and-device-configuration">Sensors and device configuration</a>
 
 3. Gateway Machine: Using terminal (macOS) or Command Prompt (Windows)  
-  - Enter `sensor_and_gateway` directory:  
-    ```
-    cd sensor_and_gateway
+  - Enter `gateway` directory:  
+    ```sh 
+    cd gateway
     ```
   - Install the dependencies 
     ```
@@ -190,16 +164,14 @@
     python gateway.py
     ```
 
-4. Back-end Machine: Please refer to [`back_end/README.md`](https://github.com/MarkMa512/smart-hostel/tree/master/back_end#readme)
+4. Back-end Machine and Telegram Setup: Please refer to [`mqtg-bot/README.md`](https://github.com/MarkMa512/smart-hostel/tree/master/back_end#readme)
 
-5. Front-end Machine: Please refer to [`front_end/README.md`](https://github.com/MarkMa512/smart-hostel/tree/master/front_end#readme)
-
-<p align="right">(<a href="#top">back to top</a>)</p> -->
+<p align="right">(<a href="#top">back to top</a>)</p>
 
 
 <!-- ROADMAP -->
 ## Roadmap
-<!-- - [x] Event 1: On the light on after lights out hours 
+- [x] Event 1: Temperature exceeded ``
   - The Light sensor on sensor_microbit_door_microbit (implemented) and sensor_microbit_window_microbit (planned) detects the light level and compares it against a threshhold value. 
 - [x] Event 2: Make large noise after lights out hours 
   - The Loudness sensor on sensor_microbit_door_microbit (implemented) detects the loudness level and compare it against a threshold value. 
@@ -211,10 +183,12 @@
   - Movement detection: When the door is locked (detected by the magnetic sensor), the ultasonic distance sensor inside and outside of the room are re-purposed as detecting movement inside the room or along the corridor. 
 
 
-<p align="right">(<a href="#top">back to top</a>)</p> -->
+<p align="right">(<a href="#top">back to top</a>)</p>
 
 
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
+
+-
 
 <p align="right">(<a href="#top">back to top</a>)</p>
