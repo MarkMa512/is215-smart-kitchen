@@ -184,10 +184,11 @@
     - Gas stove monitoring
     - Food storage monitoring (by changing gas sensor to MQ135 Air Quality Sensor)
 
-- [x] Event 3: Smoke detected
+- [x] Event 3: Smoke detection
   - Voltage readings are read off from the MQ2 sensor. When there is presence of smoke, the voltage will increase to above `SMOKE_THRESHOLD` defined in the [`/microbit/microbit.py`](), changing `smoke_status` from 0 to 1. This will trigger the alarm and the display light on Microbit. This change will be detected by [`/gateway/gateway.py`]() via `alert_filter()` function, and an alart will be sent out to the MQTT broker. 
   - Scenario: 
     - Fire and smoke detection
+    - Over-cooking detection
 
 - [x] Event 4: Unguarded stove / no motion detected
     - Distance reading are read off from the HC-SR-04 Ultrasonic Distance Sensor. When there are motions, the distance reading fluctuates, and the timing are recorded as `last_motion_time`. When there is no motion detetced for more than `TIME_THRESHOLD` defined in the `sonar_motion_filter()` function in [`/gateway/gateway.py`](), an alarm will be send out to the MQTT broker. 
