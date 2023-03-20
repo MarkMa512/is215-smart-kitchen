@@ -29,29 +29,29 @@ smoke_status = 0
 
 # define threshold for gas and smoke reading
 # adjust the threshold for caliberation under differnt envrionments
-gas_threshold = 400
-smoke_threshold = 600
+GAS_THRESHOLD = 400
+SMOKE_THRESHOLD = 600
 
 while True:
     # obtain gas reading
     gas_reading = gas_pin.read_digital()
     # If the voltage reading is less than the threshold value
-    if gas_reading >= gas_threshold:
+    if gas_reading >= GAS_THRESHOLD:
         # combustible gas is detected
         gas_status = 1
     # if combustible gas is dected
     if gas_status != 0:
         # play the alert music
-        # music.play(music.DADADADUM)
+        music.play(music.DADADADUM)
         # show the warning image
         display.show(Image.ANGRY)
 
     # obtain smoke reading
     smoke_reading = smoke_pin.read_digital()
-    if smoke_reading >= smoke_threshold:
+    if smoke_reading >= SMOKE_THRESHOLD:
         smoke_status = 1
     if smoke_status != 0:
-        # music.play(music.BA_DING)
+        music.play(music.BA_DING)
         display.show(Image.CONFUSED)
 
     # people counting status: ultrasonic ranger

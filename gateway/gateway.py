@@ -19,7 +19,6 @@ logger = logging.getLogger(__name__)
 
 # initlize the last motion time for continued motion monitoring
 last_motion_time = datetime.now()
-print(str(last_motion_time))
 
 # initlize the last distance for continued motion monitoring
 last_distance = None
@@ -226,23 +225,23 @@ def sonar_motion_filter(payload_dict: dict) -> None:
         last_distance = payload_dict["distance"]
 
     # calculate the distance difference as compared to the previous reading
-    distance_diff = abs(payload_dict["disntance"] - last_distance)
+    distance_diff = abs(payload_dict["distance"] - last_distance)
 
     # if motion is detected / exceeded the threshold
     if distance_diff >= DIST_THRESHOLD:
-        print("motion detected")
         # update the last_motion_time to now
         last_motion_time = datetime.now()
+        logger.info(f"Motion detetced, updating last motion time to {last_motion_time}")
     else:
-        print("no motion detetced")
         # calculate the duration
         time_elapsed = datetime.now() - last_motion_time
+        logger.info(f"No motion detetced, no motion time elapsed = {time_elapsed}")
         # if the time elapsed has exceeded 5 minutes
         if time_elapsed.total_seconds() > TIME_THRESHOLD:
             mqttc.publish(
                 topic=f"{GATEWAY['alert']}", payload=motion_alert, qos=1)
             logger.info(
-                f"Publish | topic: {GATEWAY['alert']} | payload: {motion_alert}")
+                f"No motion time elapsed exceeded {TIME_THRESHOLD}: Publish | topic: {GATEWAY['alert']} | payload: {motion_alert}")
 
     # update the last_distance to current distance reading
     last_distance = payload_dict["distance"]
