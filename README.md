@@ -65,19 +65,8 @@
 
 ### Setup and Screenshoot
 
-  <img
-  align="center"
-  src="media/setup.png"
-  alt="setup"
-  title="setup"
-  style="display: inline-block; margin: 0 auto; max-width: 200px">
 
-  <img
-  align="center"
-  src="media/bot_screenshot.png"
-  alt="bot_screenshot"
-  title="bot_screenshot"
-  style="display: inline-block; margin: 0 auto; max-width: 50px">
+| <img align="center" src="media/setup.png" style="display: inline-block; margin: 0 auto; max-width: 200px"> | <img align="center" src="media/bot_screenshot.png style="display: inline-block; margin: 0 auto; max-width: 50px"> |
 
 
 ### Video Demo
@@ -144,11 +133,11 @@
     - Echo: Pin16 S
     - Gnd: G
 
-2. micrboit program
-  a. connect the Microbit to your machine via USB port.
-  b. visit: [micro:bit Python Editor](https://python.microbit.org/v/3)
-  c. copy the content from [`/microbit/microbit.py`](https://github.com/MarkMa512/smart-hostel/blob/master/microbit/microbit.py)  to the editor 
-  d. click `Send to micro:bit` button to flash the program to the microbit. 
+2. micrboit program  
+  a. connect the Microbit to your machine via USB port.  
+  b. visit: [micro:bit Python Editor](https://python.microbit.org/v/3)  
+  c. copy the content from [`/microbit/microbit.py`](https://github.com/MarkMa512/smart-hostel/blob/master/microbit/microbit.py) to the editor  
+  d. click `Send to micro:bit` button to flash the program to the microbit.  
 
 ### Installation
 
