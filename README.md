@@ -12,7 +12,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/MarkMa512/smart-hostel">
-    <img src="media/logo.png" alt="Logo" style="max-width:30%" >
+    <img src="media/logo.png" alt="Logo" width="100" >
   </a>
 
 <h3 align="center">Smart Kitchen Management System</h3>
