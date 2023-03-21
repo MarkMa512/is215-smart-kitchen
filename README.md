@@ -12,10 +12,10 @@
 <br />
 <div align="center">
   <a href="https://github.com/MarkMa512/smart-hostel">
-    <img src="media/logo.png" alt="Logo" width="100" >
+    <img src="media/logo.png" alt="Logo" width="200" >
   </a>
 
-<h3 align="center">Smart Kitchen Management System</h3>
+<h3 align="center">Smart Kitchen IoT Solution</h3>
 
   <p align="center">
     a IS215 Digital Business Technologies and Transformation Project
