@@ -10,10 +10,10 @@
 
 <!-- PROJECT LOGO -->
 <br />
-<!-- <div align="center">
+<div align="center">
   <a href="https://github.com/MarkMa512/smart-hostel">
-    <img src="media/team_logo.png" alt="Logo" width="137" height="69">
-  </a> -->
+    <img src="media/logo.png" alt="Logo" style="max-width:30%" >
+  </a>
 
 <h3 align="center">Smart Kitchen Management System</h3>
 
