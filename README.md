@@ -111,7 +111,7 @@
 1. Ensure [Python 3.9](https://www.python.org/downloads/) or higher is installed; Ensure [pip](https://pip.pypa.io/en/stable/installation/) is installed. 
 2. Ensure [go1.20.2](https://go.dev/doc/install) or higher is installed
 
-### Sensors and device information and configuration
+### Sensors-and-Device-Configuration
 1. microbit and sensors setup 
 - Micro-controller: [Micro:bit V2](https://microbit.org/new-microbit/)
 - Micro-controller Program: [`/microbit/microbit.py`](https://github.com/MarkMa512/smart-hostel/blob/master/microbit/microbit.py) 
@@ -166,6 +166,16 @@
     ```
 
 4. Back-end Machine and Telegram Bot Setup: Please refer to [`mqtg-bot/README.md`](https://github.com/MarkMa512/smart-hostel/tree/master/back_end#readme)
+
+5. HiveMQ Setup Information: 
+  - MQTT Broker connection URL: 
+  ```
+  tcp://broker.hivemq.com:1883
+  ```
+  - Subscription: 
+  ```
+  is215g11t04/#
+  ```
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
