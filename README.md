@@ -111,7 +111,7 @@
 1. Ensure [Python 3.9](https://www.python.org/downloads/) or higher is installed; Ensure [pip](https://pip.pypa.io/en/stable/installation/) is installed. 
 2. Ensure [go1.20.2](https://go.dev/doc/install) or higher is installed
 
-### Sensors-and-Device-Configuration
+### Sensors and Device Configuration
 1. microbit and sensors setup 
 - Micro-controller: [Micro:bit V2](https://microbit.org/new-microbit/)
 - Micro-controller Program: [`/microbit/microbit.py`](https://github.com/MarkMa512/is215-smart-kitchen/blob/master/microbit/microbit.py) 
@@ -133,7 +133,7 @@
     - Echo: Pin16 S
     - Gnd: G
 
-2. micrboit program  
+2. Microbit program  
   a. connect the Microbit to your machine via USB port.  
   b. visit: [micro:bit Python Editor](https://python.microbit.org/v/3)  
   c. copy the content from [`/microbit/microbit.py`](https://github.com/MarkMa512/is215-smart-kitchen/blob/master/microbit/microbit.py) to the editor  

@@ -7,7 +7,7 @@ gas_reading = 0
 smoke_reading = 0
 motion_reading = 0
 
-# defeine the connection pins
+# define the connection pins
 # Note: Only pin0, pin1 and pin2 supports Analogue I/O
 # pin0 for MQ5 gas sensor
 gas_pin = pin0
