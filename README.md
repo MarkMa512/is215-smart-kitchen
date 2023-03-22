@@ -165,7 +165,7 @@
     python gateway.py
     ```
 
-4. Back-end Machine and Telegram Bot Setup: Please refer to [`mqtg-bot/README.md`](https://github.com/MarkMa512/smart-hostel/tree/master/back_end#readme)
+4. Back-end Machine and Telegram Bot Setup: Please refer to [`mqtg-bot/README.md`](https://github.com/MarkMa512/mqtg-bot)
 
 5. HiveMQ Setup Information:  
   - MQTT Broker connection URL: 
