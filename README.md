@@ -69,7 +69,7 @@
 | <img align="center" src="media/setup.png" style="display: inline-block; margin: 0 auto; max-width: 100%"> | <img align="center" src="media/bot_screenshot.png" style="display: inline-block; margin: 0 auto; max-width:30%"> |
 
 
-### Video Demo
+<!-- ### Video Demo -->
 <!-- [![Video Demo](https://img.youtube.com/vi/VCjBWMjaBcI/0.jpg)](https://www.youtube.com/watch?v=VCjBWMjaBcI) -->
 
 
@@ -167,15 +167,15 @@
 
 4. Back-end Machine and Telegram Bot Setup: Please refer to [`mqtg-bot/README.md`](https://github.com/MarkMa512/smart-hostel/tree/master/back_end#readme)
 
-5. HiveMQ Setup Information: 
+5. HiveMQ Setup Information:  
   - MQTT Broker connection URL: 
-  ```
-  tcp://broker.hivemq.com:1883
-  ```
+    ```
+    tcp://broker.hivemq.com:1883
+    ```
   - Subscription: 
-  ```
-  is215g11t04/#
-  ```
+    ```
+    is215g11t04/#
+    ```
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
