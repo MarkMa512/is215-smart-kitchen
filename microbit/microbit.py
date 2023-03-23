@@ -86,7 +86,8 @@ while True:
     """
     Send the data to serial reading
     """
-    # print("g:", gas_reading, "s:", smoke_reading)
+    if is_silent == True: 
+        print("g:", gas_reading, "s:", smoke_reading)
     print(temperature(), ",", gas_status, ",",
           smoke_status, ",", dist_str)
 
